@@ -1,0 +1,473 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Autocall Structuring</title>
+<meta name="description" content="A hypothetical Euro Stoxx 50 autocallable note priced under local volatility on Eurex option settlements, cross-checked by a PDE, then stressed and hedged. Every computed figure is read from the project's results files.">
+<link rel="canonical" href="https://julesvntr.github.io/autocall/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Autocall Structuring">
+<meta property="og:description" content="A hypothetical Euro Stoxx 50 autocallable note priced under local volatility on Eurex option settlements, cross-checked by a PDE, then stressed and hedged. Model output, not an offer.">
+<meta property="og:url" content="https://julesvntr.github.io/autocall/">
+<meta property="og:image" content="https://julesvntr.github.io/autocall/og.png">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body id="top">
+
+<header class="nav">
+  <div class="wrap">
+    <a class="brand" href="#top" aria-label="autocall-structuring, home">
+      <svg width="22" height="22" viewBox="0 0 22 22" aria-hidden="true"><rect x="1" y="1" width="20" height="20" rx="6" fill="none" stroke="currentColor" stroke-opacity=".25"/><path d="M5 15.5h4v-4h4v-4h4" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      autocall-structuring
+    </a>
+    <nav aria-label="Sections">
+      <a href="#pricing">Pricing</a><a href="#risk">Risk</a><a href="#method">Method</a><a href="#repricing">Repricing</a>
+    </nav>
+    <span class="sp"></span>
+    <span class="asof">Data as of 23 October 2026</span>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <section class="hero" aria-labelledby="hero-h">
+    <div>
+      <p class="asof asof-m">Data as of 23 October 2026</p>
+      <p class="eyebrow">Structured products research · Jules Ventre</p>
+      <h1 id="hero-h">A Euro Stoxx 50 autocall, priced on Eurex option settlements.</h1>
+      <p class="lede">Local-volatility Monte Carlo calibrated to the end-of-day settlement prices of Eurex OESX index options, treated as mid prices; cross-checked by a Crank-Nicolson PDE, then stressed and hedged. Every computed figure on this page is read from the project's results files.</p>
+
+      <div class="hero-fig">
+        <div class="label">Conditional coupon, quoted</div>
+        <div class="big">6.70%<span class="pa">p.a.</span></div>
+        <div class="sub">Solved at 6.715% <span class="se">SE 0.72 bp</span> on 4,000,000 paths at 252 steps per year, for a target model value of 98%, a design assumption; quoted rounded down to the nearest 5 bp.</div>
+      </div>
+
+      <dl class="kpis">
+        <div>
+          <dt>More coupon than flat Black-Scholes at the 5-year ATM-forward vol</dt>
+          <dd>+130 bp<span class="se">SE 0.8</span></dd>
+        </div>
+        <div>
+          <dt>Monte Carlo minus PDE, headline seed (<a href="#method">pooled seeds</a>)</dt>
+          <dd>-0.12 bp<span class="se">SE 0.72</span></dd>
+        </div>
+        <div>
+          <dt>Value at the quoted coupon</dt>
+          <dd>97.98%<span class="se">SE 0.01%</span></dd>
+        </div>
+      </dl>
+    </div>
+
+    <aside class="ts" aria-label="Indicative terms">
+      <div class="ts-top"><b>Indicative terms</b><span>Model output, not an offer</span></div>
+      <div class="ts-title">
+        <div class="t1">Autocallable note on SX5E, memory coupon</div>
+        <div class="t2">Initial level: SX5E close on 23 October 2026 · EUR</div>
+      </div>
+      <dl>
+        <div class="row"><dt>Maturity</dt><dd>5 years, annual observations</dd></div>
+        <div class="row"><dt>Autocall</dt><dd>At or above the initial level on any observation from the first, no step-down: par plus the year's coupon and the coupons held in memory</dd></div>
+        <div class="row"><dt>Coupon</dt><dd>6.70% p.a. if at or above 80% of initial, with memory<small>The coupon barrier is a design choice; memory catches up missed coupons</small></dd></div>
+        <div class="row"><dt>Protection barrier</dt><dd>60%, European, observed at maturity only<small>Below it, the full index loss</small></dd></div>
+        <div class="row"><dt>Price</dt><dd>Issued at par, for a target model value of 98% (an assumption)<small>Issuer margin 2.02% of par <span class="se">SE 0.01%</span>, distribution included: the consequence of that target</small></dd></div>
+        <div class="row"><dt>Credit</dt><dd>Hypothetical issuer: no issuer credit spread in the model value</dd></div>
+      </dl>
+      <div class="ladder">
+        <div class="lt">Index level, % of initial · the 60% barrier applies at maturity only</div>
+<svg xmlns="http://www.w3.org/2000/svg" class="chart" viewBox="0 0 330 46" role="img"><title>Payoff ladder, index level in percent of the initial level</title>
+<defs><pattern id="hatch-ladder" width="5" height="5" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="1.5" height="5" fill="var(--ink)"/></pattern></defs>
+<rect x="1" y="2" width="163" height="10" rx="2" fill="url(#hatch-ladder)" opacity="0.55"/>
+<rect x="166" y="2" width="53" height="10" rx="2" fill="var(--line)"/>
+<rect x="221" y="2" width="53" height="10" rx="2" fill="var(--accent)" fill-opacity="0.35"/>
+<rect x="276" y="2" width="53" height="10" rx="2" fill="var(--accent)"/>
+<text x="161.1" y="27" class="lb" text-anchor="middle">60%</text>
+<text x="161.1" y="42" class="lbm" text-anchor="middle">protection</text>
+<text x="222.3" y="27" class="lb" text-anchor="middle">80%</text>
+<text x="222.3" y="42" class="lbm" text-anchor="middle">coupon</text>
+<text x="276.6" y="27" class="lb" text-anchor="middle">100%</text>
+<text x="276.6" y="42" class="lbm" text-anchor="middle">autocall</text>
+</svg>
+      </div>
+    </aside>
+  </section>
+
+  <section id="ending" class="card" aria-labelledby="end-h">
+    <div class="end-head">
+      <div>
+        <h2 id="end-h">How the note ends</h2>
+        <p>Probability of each outcome at issue, local-vol model. Most paths are called at the first observation.</p>
+      </div>
+      <div class="end-stats">
+        <div class="stat">
+          <div class="k">Expected life</div>
+          <div class="val">2.18 years</div><div class="sub">SE 0.0006</div>
+        </div>
+        <div class="stat">
+          <div class="k">Capital loss at maturity</div>
+          <div class="val">9.6%</div><div class="sub">of paths · SE 0.01%</div>
+        </div>
+        <div class="stat">
+          <div class="k">Loss given a loss</div>
+          <div class="val">69.6%</div><div class="sub">SE 0.03%</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="endbar">
+<svg xmlns="http://www.w3.org/2000/svg" class="chart" viewBox="0 0 960 96" role="img"><title>How the note ends, local-vol model</title>
+<defs><pattern id="hatch-ending-model" width="5" height="5" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="1.5" height="5" fill="var(--ink)"/></pattern></defs>
+<path d="M6,27H546.84Q546.84,27 546.84,27V71Q546.84,71 546.84,71H6Q0,71 0,65V33Q0,27 6,27Z" fill="var(--accent)" fill-opacity="1"><title>Called at year 1: 57.6% (SE 0.01%)</title></path>
+<path d="M548.84,27H667.58Q667.58,27 667.58,27V71Q667.58,71 667.58,71H548.84Q548.84,71 548.84,71V27Q548.84,27 548.84,27Z" fill="var(--accent)" fill-opacity="0.68"><title>Called at year 2: 12.5% (SE 0.02%)</title></path>
+<path d="M669.58,27H723.29Q723.29,27 723.29,27V71Q723.29,71 723.29,71H669.58Q669.58,71 669.58,71V27Q669.58,27 669.58,27Z" fill="var(--accent)" fill-opacity="0.46"><title>Called at year 3: 5.7% (SE 0.01%)</title></path>
+<path d="M725.29,27H757.7Q757.7,27 757.7,27V71Q757.7,71 757.7,71H725.29Q725.29,71 725.29,71V27Q725.29,27 725.29,27Z" fill="var(--accent)" fill-opacity="0.31"><title>Called at year 4: 3.4% (SE 0.01%)</title></path>
+<path d="M759.7,27H866.49Q866.49,27 866.49,27V71Q866.49,71 866.49,71H759.7Q759.7,71 759.7,71V27Q759.7,27 759.7,27Z" fill="var(--accent)" fill-opacity="0.16"><title>Par repaid at maturity: 11.2% (SE 0.01%)</title></path>
+<path d="M868.49,27H954Q960,27 960,33V65Q960,71 954,71H868.49Q868.49,71 868.49,71V27Q868.49,27 868.49,27Z" fill="url(#hatch-ending-model)" opacity="0.85"><title>Capital loss at maturity: 9.6% (SE 0.01%)</title></path>
+<g class="lbls" aria-hidden="true">
+<text x="0" y="12" class="lbm">Called early: par plus coupon</text>
+<line x1="0" x2="757.7" y1="20" y2="20" stroke="var(--faint)" stroke-width="1"/>
+<line x1="0" x2="0" y1="14" y2="20" stroke="var(--faint)" stroke-width="1"/>
+<line x1="757.7" x2="757.7" y1="14" y2="20" stroke="var(--faint)" stroke-width="1"/>
+<text x="759.7" y="12" class="lbm">Held to maturity</text>
+<line x1="759.7" x2="960" y1="20" y2="20" stroke="var(--faint)" stroke-width="1"/>
+<line x1="759.7" x2="759.7" y1="14" y2="20" stroke="var(--faint)" stroke-width="1"/>
+<line x1="960" x2="960" y1="14" y2="20" stroke="var(--faint)" stroke-width="1"/>
+<text x="12" y="54" font-weight="600" fill="var(--on-accent)" font-size="13">57.6%</text>
+<text x="0" y="90" class="lbm">Year 1</text>
+<text x="608.21" y="53.5" class="vl" text-anchor="middle">12.5%</text>
+<text x="548.84" y="90" class="lbm">2</text>
+<text x="696.44" y="53.5" class="vl" text-anchor="middle">5.7%</text>
+<text x="669.58" y="90" class="lbm">3</text>
+<text x="741.5" y="53.5" class="vl" text-anchor="middle">3.4%</text>
+<text x="725.29" y="90" class="lbm">4</text>
+<text x="813.1" y="53.5" class="vl" text-anchor="middle">11.2%</text>
+<text x="759.7" y="90" class="lbm">Par repaid</text>
+<rect x="893.24" y="39" width="42" height="19" rx="5" fill="var(--surface)"/>
+<text x="914.24" y="53.5" class="vl" text-anchor="middle">9.6%</text>
+<text x="868.49" y="90" class="lbm">Capital loss</text>
+</g>
+</svg>
+    </div>
+
+    <table class="end-table">
+      <thead>
+        <tr><th scope="col">Outcome</th><th scope="col">Local-vol model</th></tr>
+      </thead>
+      <tbody>
+        <tr><th scope="row" class="call"><i class="k"></i>Called at year 1</th><td>57.6%<span class="se">SE 0.01%</span></td></tr>
+        <tr><th scope="row" class="call"><i class="k"></i>Called at year 2</th><td>12.5%<span class="se">SE 0.02%</span></td></tr>
+        <tr><th scope="row" class="call"><i class="k"></i>Called at year 3</th><td>5.7%<span class="se">SE 0.01%</span></td></tr>
+        <tr><th scope="row" class="call"><i class="k"></i>Called at year 4</th><td>3.4%<span class="se">SE 0.01%</span></td></tr>
+        <tr><th scope="row" class="held">Held to maturity</th><td>20.9%<span class="se">SE 0.02%</span></td></tr>
+        <tr><th scope="row" class="par"><i class="k"></i>Par repaid at maturity</th><td>11.2%<span class="se">SE 0.01%</span></td></tr>
+        <tr><th scope="row" class="loss"><i class="k"></i>Capital loss at maturity</th><td>9.6%<span class="se">SE 0.01%</span></td></tr>
+      </tbody>
+    </table>
+
+    <div class="end-foot">
+      <p>Risk-neutral probabilities from 4,000,000 local-vol paths at 252 steps per year: a pricing measure, not a forecast. 4.3% <span class="se">SE 0.01%</span> of paths end below the lowest fitted strike, where the surface is extrapolated: the two loss figures carry that caveat. Each probability is rounded on its own, so rows may not add up.</p>
+    </div>
+  </section>
+
+  <div class="stack">
+
+    <section id="pricing" class="panel" aria-labelledby="pricing-h">
+      <p class="sec-k">Pricing</p>
+      <h2 id="pricing-h">Local vol pays 130 bp more than flat Black-Scholes at the 5-year ATM-forward vol<span class="se">SE 0.8 bp</span>.</h2>
+      <p class="take">Flat Black-Scholes at the 5-year ATM-forward vol of 17.75% pays 5.42% <span class="se">SE 0.4 bp</span>. Local volatility prices the down-and-in put, knocked in below 60% of initial at maturity, on the low-strike wing of the smile. Per unit of the flat-vol coupon annuity, the put moves the coupon by +114 bp <span class="se">SE 0.6</span> and the redemption timing by -68 bp <span class="se">SE 0.1</span>; the change of that annuity moves it by +84 bp <span class="se">SE 0.3</span>, and local vol pays 6.715% <span class="se">SE 0.72 bp</span>: a flat model needs 20.53% <span class="se">SE 0.02%</span> vol to agree, 2.78 points above the ATM-forward level <span class="se">SE 0.02</span>.</p>
+      <div class="sub-grid">
+        <div>
+          <div class="ch-h">Solved coupon against a flat volatility</div>
+          <div class="ch-s">Coupon for a 98% model value, 4,000,000 paths per point</div>
+          <div class="chart-box">
+<div class="chart-scroll" tabindex="0" role="group" aria-label="Solved coupon against a flat volatility"><svg xmlns="http://www.w3.org/2000/svg" class="chart" viewBox="0 0 520 256" role="img"><title>Solved coupon against a flat volatility</title>
+<line x1="44" x2="508" y1="208.86" y2="208.86" class="grid"/>
+<text x="36" y="212.86" class="ax" text-anchor="end">2.5%</text>
+<line x1="44" x2="508" y1="161.34" y2="161.34" class="grid"/>
+<text x="36" y="165.34" class="ax" text-anchor="end">5.0%</text>
+<line x1="44" x2="508" y1="113.82" y2="113.82" class="grid"/>
+<text x="36" y="117.82" class="ax" text-anchor="end">7.5%</text>
+<line x1="44" x2="508" y1="66.3" y2="66.3" class="grid"/>
+<text x="36" y="70.3" class="ax" text-anchor="end">10.0%</text>
+<line x1="44" x2="508" y1="216" y2="216" class="base"/>
+<text x="76" y="233" class="ax" text-anchor="middle">10%</text>
+<text x="176" y="233" class="ax" text-anchor="middle">15%</text>
+<text x="276" y="233" class="ax" text-anchor="middle">20%</text>
+<text x="376" y="233" class="ax" text-anchor="middle">25%</text>
+<text x="476" y="233" class="ax" text-anchor="middle">30%</text>
+<text x="508" y="252" class="ax" text-anchor="end">flat volatility</text>
+<text x="0" y="11" class="ax">coupon p.a.</text>
+<line x1="44" x2="508" y1="128.74" y2="128.74" stroke="var(--accent)" stroke-width="1.5"/>
+<text x="508" y="145.74" class="vl" text-anchor="end">Local vol 6.715%</text>
+<path d="M76,202.62L96,198.84L116,194.15L136,188.57L156,182.25L176,175.23L196,167.7L216,159.66L236,151.25L256,142.54L276,133.54L296,124.35L316,114.99L336,105.44L356,95.69L376,85.9L396,76.01L416,66.02L436,55.91L456,45.66L476,35.38" fill="none" stroke="var(--ref)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<text x="466" y="35.66" class="lbm" text-anchor="end">Flat Black-Scholes</text>
+<line x1="231" x2="231" y1="153.37" y2="128.74" stroke="var(--ink-2)" stroke-width="1"><title>Local vol minus flat Black-Scholes: +130 bp (SE 0.8 bp)</title></line>
+<line x1="227" x2="235" y1="128.74" y2="128.74" stroke="var(--ink-2)" stroke-width="1"/>
+<text x="222" y="145.06" class="vl" text-anchor="end">+130 bp</text>
+<circle cx="231" cy="153.37" r="5" fill="var(--ref)" stroke="var(--surface)" stroke-width="2"><title>Flat Black-Scholes at the ATM-forward vol: coupon 5.42% (SE 0.4 bp)</title></circle>
+<text x="241" y="171.37" class="vl">5.42%</text>
+<text x="241" y="186.37" class="lbm">ATM-forward vol 17.75%</text>
+<circle cx="286.51" cy="128.74" r="6" fill="var(--accent)" stroke="var(--surface)" stroke-width="2"><title>Implied flat vol of the note: 20.53% (SE 0.02 vol points); local vol coupon 6.715% (SE 0.72 bp)</title></circle>
+<text x="276.51" y="104.74" class="vl" text-anchor="end">20.53%</text>
+<text x="276.51" y="118.74" class="lbm" text-anchor="end">implied flat vol of the note</text>
+<circle cx="76" cy="202.62" r="4" fill="var(--ref)" stroke="var(--surface)" stroke-width="2" opacity="0" class="hit"><title>Flat vol 10%: solved coupon 2.83% (SE 0.1 bp)</title></circle>
+<circle cx="96" cy="198.84" r="4" fill="var(--ref)" stroke="var(--surface)" stroke-width="2" opacity="0" class="hit"><title>Flat vol 11%: solved coupon 3.03% (SE 0.1 bp)</title></circle>
+<circle cx="116" cy="194.15" r="4" fill="var(--ref)" stroke="var(--surface)" stroke-width="2" opacity="0" class="hit"><title>Flat vol 12%: solved coupon 3.27% (SE 0.2 bp)</title></circle>
+<circle cx="136" cy="188.57" r="4" fill="var(--ref)" stroke="var(--surface)" stroke-width="2" opacity="0" class="hit"><title>Flat vol 13%: solved coupon 3.57% (SE 0.2 bp)</title></circle>
+<circle cx="156" cy="182.25" r="4" fill="var(--ref)" stroke="var(--surface)" stroke-width="2" opacity="0" class="hit"><title>Flat vol 14%: solved coupon 3.90% (SE 0.3 bp)</title></circle>
+<circle cx="176" cy="175.23" r="4" fill="var(--ref)" stroke="var(--surface)" stroke-width="2" opacity="0" class="hit"><title>Flat vol 15%: solved coupon 4.27% (SE 0.3 bp)</title></circle>
+<circle cx="196" cy="167.7" r="4" fill="var(--ref)" stroke="var(--surface)" stroke-width="2" opacity="0" class="hit"><title>Flat vol 16%: solved coupon 4.67% (SE 0.4 bp)</title></circle>
+<circle cx="216" cy="159.66" r="4" fill="var(--ref)" stroke="var(--surface)" stroke-width="2" opacity="0" class="hit"><title>Flat vol 17%: solved coupon 5.09% (SE 0.4 bp)</title></circle>
+<circle cx="236" cy="151.25" r="4" fill="var(--ref)" stroke="var(--surface)" stroke-width="2" opacity="0" class="hit"><title>Flat vol 18%: solved coupon 5.53% (SE 0.5 bp)</title></circle>
+<circle cx="256" cy="142.54" r="4" fill="var(--ref)" stroke="var(--surface)" stroke-width="2" opacity="0" class="hit"><title>Flat vol 19%: solved coupon 5.99% (SE 0.5 bp)</title></circle>
+<circle cx="276" cy="133.54" r="4" fill="var(--ref)" stroke="var(--surface)" stroke-width="2" opacity="0" class="hit"><title>Flat vol 20%: solved coupon 6.46% (SE 0.5 bp)</title></circle>
+<circle cx="296" cy="124.35" r="4" fill="var(--ref)" stroke="var(--surface)" stroke-width="2" opacity="0" class="hit"><title>Flat vol 21%: solved coupon 6.95% (SE 0.6 bp)</title></circle>
+<circle cx="316" cy="114.99" r="4" fill="var(--ref)" stroke="var(--surface)" stroke-width="2" opacity="0" class="hit"><title>Flat vol 22%: solved coupon 7.44% (SE 0.6 bp)</title></circle>
+<circle cx="336" cy="105.44" r="4" fill="var(--ref)" stroke="var(--surface)" stroke-width="2" opacity="0" class="hit"><title>Flat vol 23%: solved coupon 7.94% (SE 0.7 bp)</title></circle>
+<circle cx="356" cy="95.69" r="4" fill="var(--ref)" stroke="var(--surface)" stroke-width="2" opacity="0" class="hit"><title>Flat vol 24%: solved coupon 8.45% (SE 0.7 bp)</title></circle>
+<circle cx="376" cy="85.9" r="4" fill="var(--ref)" stroke="var(--surface)" stroke-width="2" opacity="0" class="hit"><title>Flat vol 25%: solved coupon 8.97% (SE 0.8 bp)</title></circle>
+<circle cx="396" cy="76.01" r="4" fill="var(--ref)" stroke="var(--surface)" stroke-width="2" opacity="0" class="hit"><title>Flat vol 26%: solved coupon 9.49% (SE 0.8 bp)</title></circle>
+<circle cx="416" cy="66.02" r="4" fill="var(--ref)" stroke="var(--surface)" stroke-width="2" opacity="0" class="hit"><title>Flat vol 27%: solved coupon 10.02% (SE 0.9 bp)</title></circle>
+<circle cx="436" cy="55.91" r="4" fill="var(--ref)" stroke="var(--surface)" stroke-width="2" opacity="0" class="hit"><title>Flat vol 28%: solved coupon 10.55% (SE 0.9 bp)</title></circle>
+<circle cx="456" cy="45.66" r="4" fill="var(--ref)" stroke="var(--surface)" stroke-width="2" opacity="0" class="hit"><title>Flat vol 29%: solved coupon 11.09% (SE 1.0 bp)</title></circle>
+<circle cx="476" cy="35.38" r="4" fill="var(--ref)" stroke="var(--surface)" stroke-width="2" opacity="0" class="hit"><title>Flat vol 30%: solved coupon 11.63% (SE 1.0 bp)</title></circle>
+</svg></div>
+          </div>
+        </div>
+        <div>
+          <div class="ch-h">From flat Black-Scholes to local volatility</div>
+          <div class="ch-s">Components in coupon basis points: one exact decomposition (put and timing valued per unit of the flat-vol coupon annuity); standard errors Monte Carlo only</div>
+          <div class="chart-box">
+<div class="chart-scroll" tabindex="0" role="group" aria-label="From the flat Black-Scholes coupon to the local-vol coupon"><svg xmlns="http://www.w3.org/2000/svg" class="chart" viewBox="0 0 520 258" role="img"><title>From the flat Black-Scholes coupon to the local-vol coupon</title>
+<line x1="265.52" x2="265.52" y1="4" y2="254" class="grid"/>
+<line x1="434.48" x2="434.48" y1="4" y2="254" class="grid"/>
+<text x="0" y="33" class="lb">Flat Black-Scholes</text>
+<circle cx="265.52" cy="29" r="5" fill="var(--ref)" stroke="var(--surface)" stroke-width="2"><title>Flat Black-Scholes: 5.42% (SE 0.4 bp)</title></circle>
+<text x="520" y="30" class="vl" text-anchor="end">5.42%</text>
+<text x="520" y="44" class="sem" text-anchor="end">SE 0.4 bp</text>
+<text x="0" y="83" class="lb">Put, as borne by the client</text>
+<rect x="265.52" y="72" width="148.07" height="14" rx="3" fill="var(--ink-2)" opacity="0.82"><title>Put, as borne by the client: +114 bp (SE 0.6 bp)</title></rect>
+<line x1="265.52" x2="265.52" y1="38" y2="71" stroke="var(--faint)" stroke-width="1" stroke-dasharray="2 2"/>
+<text x="520" y="80" class="vl" text-anchor="end">+114 bp</text>
+<text x="520" y="94" class="sem" text-anchor="end">SE 0.6 bp</text>
+<text x="0" y="133" class="lb">Redemption timing</text>
+<rect x="325.17" y="122" width="88.42" height="14" rx="3" fill="var(--ink-2)" opacity="0.42"><title>Redemption timing: -68 bp (SE 0.1 bp)</title></rect>
+<line x1="413.58" x2="413.58" y1="88" y2="121" stroke="var(--faint)" stroke-width="1" stroke-dasharray="2 2"/>
+<text x="520" y="130" class="vl" text-anchor="end">-68 bp</text>
+<text x="520" y="144" class="sem" text-anchor="end">SE 0.1 bp</text>
+<text x="0" y="183" class="lb">Coupon annuity</text>
+<rect x="325.17" y="172" width="109.32" height="14" rx="3" fill="var(--ink-2)" opacity="0.82"><title>Coupon annuity: +84 bp (SE 0.3 bp)</title></rect>
+<line x1="325.17" x2="325.17" y1="138" y2="171" stroke="var(--faint)" stroke-width="1" stroke-dasharray="2 2"/>
+<text x="520" y="180" class="vl" text-anchor="end">+84 bp</text>
+<text x="520" y="194" class="sem" text-anchor="end">SE 0.3 bp</text>
+<text x="0" y="233" class="lb">Local volatility</text>
+<circle cx="434.48" cy="229" r="6" fill="var(--accent)" stroke="var(--surface)" stroke-width="2"><title>Local volatility: 6.715% (SE 0.72 bp)</title></circle>
+<line x1="434.48" x2="434.48" y1="188" y2="221" stroke="var(--faint)" stroke-width="1" stroke-dasharray="2 2"/>
+<text x="520" y="230" class="vl" text-anchor="end">6.715%</text>
+<text x="520" y="244" class="sem" text-anchor="end">SE 0.72 bp</text>
+</svg></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="duo">
+      <section id="risk" class="panel" aria-labelledby="risk-h">
+        <p class="sec-k">Risk</p>
+        <h2 id="risk-h">The issuer is long the put, and gains in a 2008-like crash.</h2>
+        <p class="take">The issuer is long vega, +64,466 EUR per vol point <span class="se">SE 433</span> on a parallel shift of the quotes; by expiry bucket of the quotes, 0.0 to 1.5 years: +18,859 <span class="se">SE 677</span>; 1.5 to 3.0 years: +17,293 <span class="se">SE 968</span>; 3.0 to 6.0 years: +30,390 <span class="se">SE 794</span>; 6.0 to 10.0 years: -2,790 <span class="se">SE 176</span> (beyond the note's last observation: refit leakage, not an exposure). Issuer P&amp;L in EUR per EUR 10,000,000 of notes sold, on 400,000 paths at 252 steps per year.</p>
+        <div class="ch-h">Vega by expiry bucket of the quotes</div>
+        <div class="ch-s">EUR per vol point on the quotes of each bucket, surface refitted; 400,000 paths at 252 steps per year</div>
+        <div class="chart-box">
+<div class="chart-scroll" tabindex="0" role="group" aria-label="Vega by expiry bucket of the quotes"><svg xmlns="http://www.w3.org/2000/svg" class="chart" viewBox="0 0 520 150" role="img"><title>Vega by expiry bucket of the quotes</title>
+<line x1="194.5" x2="194.5" y1="0" y2="150" class="base"/>
+<text x="0" y="25" class="lb">0.0 to 1.5 years</text>
+<path d="M194.5,14H316.91Q320.91,14 320.91,18V24Q320.91,28 316.91,28H194.5Z" fill="var(--accent)"><title>Quotes 0.0 to 1.5 years: +18,859 EUR per vol point (SE 677)</title></path>
+<text x="328.91" y="25" class="vl">+18,859 <tspan class="sem">SE 677</tspan></text>
+<text x="0" y="61" class="lb">1.5 to 3.0 years</text>
+<path d="M194.5,50H306.42Q310.42,50 310.42,54V60Q310.42,64 306.42,64H194.5Z" fill="var(--accent)"><title>Quotes 1.5 to 3.0 years: +17,293 EUR per vol point (SE 968)</title></path>
+<text x="318.42" y="61" class="vl">+17,293 <tspan class="sem">SE 968</tspan></text>
+<text x="0" y="97" class="lb">3.0 to 6.0 years</text>
+<path d="M194.5,86H394.21Q398.21,86 398.21,90V96Q398.21,100 394.21,100H194.5Z" fill="var(--accent)"><title>Quotes 3.0 to 6.0 years: +30,390 EUR per vol point (SE 794)</title></path>
+<text x="406.21" y="97" class="vl">+30,390 <tspan class="sem">SE 794</tspan></text>
+<text x="0" y="127" class="lb">6.0 to 10.0 years</text>
+<text x="0" y="142" class="lbm">beyond last observation</text>
+<path d="M194.5,122H179.79Q175.79,122 175.79,126V132Q175.79,136 179.79,136H194.5Z" fill="var(--accent)" opacity="0.55"><title>Quotes 6.0 to 10.0 years: -2,790 EUR per vol point (SE 176); beyond the note&#x27;s last observation: refit leakage, not an exposure</title></path>
+<text x="202.5" y="133" class="vl">-2,790 <tspan class="sem">SE 176</tspan></text>
+</svg></div>
+        </div>
+        <div class="ch-h">Instantaneous crash at inception</div>
+        <div class="scen">
+          <div class="s">
+            <div class="nm">2008-like<small>Spot -40%, vols +25 pts, dividend yield ×0.70</small></div>
+            <div><div class="k">Note value</div><div class="n">54.2%<span class="se">SE 0.02%</span></div></div>
+            <div><div class="k">Unhedged</div><div class="n">+4,375,205<span class="se">SE 4,119</span></div></div>
+            <div><div class="k">Delta-hedged</div><div class="n">+2,039,458<span class="se">SE 22,467</span></div></div>
+          </div>
+        </div>
+        <p class="fine">Issuer P&amp;L in EUR per EUR 10,000,000 of notes sold. Instantaneous repricing at inception: no rehedging path, funding or bid-offer.</p>
+      </section>
+      <section id="method" class="panel" aria-labelledby="method-h">
+        <p class="sec-k">Method and checks</p>
+        <h2 id="method-h">On the headline seed, Monte Carlo and PDE agree within two standard errors at 252 steps per year: -0.12 bp<span class="se">SE 0.72</span>.</h2>
+        <p class="take">A Crank-Nicolson PDE on the same local vol prices the coupon at 6.716%, with no sampling error; the headline Monte Carlo is set against it on its own seed. Pooled over the headline seed and 12 independent seeds of 1,600,000 paths, all at 252 steps per year, the coupon is 6.724% <span class="se">SE 0.30 bp</span>, against 6.716% for the PDE; a fit linear in the time step leaves a bias of +0.40 bp <span class="se">SE 0.07</span> at 252 steps per year, on 1,600,000 paths per grid; that standard error assumes an error linear in the time step, and the 52-step minus 252-step gap measured directly lies above the line's prediction, at a z-score of +2.4.</p>
+        <div class="ch-h">Monte Carlo minus PDE coupon, by Euler steps per year</div>
+        <div class="ch-s">Same seed and 4,000,000 paths per row; whiskers: two standard errors</div>
+        <div class="chart-box">
+<div class="chart-scroll" tabindex="0" role="group" aria-label="Monte Carlo minus PDE coupon by Euler steps per year"><svg xmlns="http://www.w3.org/2000/svg" class="chart" viewBox="0 0 520 212" role="img"><title>Monte Carlo minus PDE coupon by Euler steps per year</title>
+<line x1="38" x2="504" y1="145.71" y2="145.71" class="base"/>
+<text x="30" y="149.71" class="ax" text-anchor="end">0.0</text>
+<line x1="38" x2="504" y1="111.76" y2="111.76" class="grid"/>
+<text x="30" y="115.76" class="ax" text-anchor="end">+2.5</text>
+<line x1="38" x2="504" y1="77.81" y2="77.81" class="grid"/>
+<text x="30" y="81.81" class="ax" text-anchor="end">+5.0</text>
+<line x1="38" x2="504" y1="43.86" y2="43.86" class="grid"/>
+<text x="30" y="47.86" class="ax" text-anchor="end">+7.5</text>
+<text x="30" y="12" class="ax" text-anchor="end">bp</text>
+<text x="44" y="138.71" class="lbm">PDE 6.716%, no sampling error</text>
+<text x="70.14" y="196" class="ax" text-anchor="middle">12</text>
+<line x1="70.14" x2="70.14" y1="66.34" y2="27.17" stroke="var(--accent)" stroke-width="1.5" opacity="0.55"/>
+<line x1="66.14" x2="74.14" y1="66.34" y2="66.34" stroke="var(--accent)" stroke-width="1.5" opacity="0.55"/>
+<line x1="66.14" x2="74.14" y1="27.17" y2="27.17" stroke="var(--accent)" stroke-width="1.5" opacity="0.55"/>
+<circle cx="70.14" cy="46.76" r="5" fill="var(--accent)" stroke="var(--surface)" stroke-width="2"><title>12 steps per year: Monte Carlo minus PDE +7.29 bp (SE 0.72, z = +10.1)</title></circle>
+<text x="172.16" y="196" class="ax" text-anchor="middle">26</text>
+<line x1="172.16" x2="172.16" y1="101.47" y2="62.26" stroke="var(--accent)" stroke-width="1.5" opacity="0.55"/>
+<line x1="168.16" x2="176.16" y1="101.47" y2="101.47" stroke="var(--accent)" stroke-width="1.5" opacity="0.55"/>
+<line x1="168.16" x2="176.16" y1="62.26" y2="62.26" stroke="var(--accent)" stroke-width="1.5" opacity="0.55"/>
+<circle cx="172.16" cy="81.86" r="5" fill="var(--accent)" stroke="var(--surface)" stroke-width="2"><title>26 steps per year: Monte Carlo minus PDE +4.70 bp (SE 0.72, z = +6.5)</title></circle>
+<text x="263.62" y="196" class="ax" text-anchor="middle">52</text>
+<line x1="263.62" x2="263.62" y1="111.49" y2="72.25" stroke="var(--accent)" stroke-width="1.5" opacity="0.55"/>
+<line x1="259.62" x2="267.62" y1="111.49" y2="111.49" stroke="var(--accent)" stroke-width="1.5" opacity="0.55"/>
+<line x1="259.62" x2="267.62" y1="72.25" y2="72.25" stroke="var(--accent)" stroke-width="1.5" opacity="0.55"/>
+<circle cx="263.62" cy="91.87" r="5" fill="var(--accent)" stroke="var(--surface)" stroke-width="2"><title>52 steps per year: Monte Carlo minus PDE +3.96 bp (SE 0.72, z = +5.5)</title></circle>
+<text x="355.08" y="196" class="ax" text-anchor="middle">104</text>
+<line x1="355.08" x2="355.08" y1="139.98" y2="100.85" stroke="var(--accent)" stroke-width="1.5" opacity="0.55"/>
+<line x1="351.08" x2="359.08" y1="139.98" y2="139.98" stroke="var(--accent)" stroke-width="1.5" opacity="0.55"/>
+<line x1="351.08" x2="359.08" y1="100.85" y2="100.85" stroke="var(--accent)" stroke-width="1.5" opacity="0.55"/>
+<circle cx="355.08" cy="120.42" r="5" fill="var(--accent)" stroke="var(--surface)" stroke-width="2"><title>104 steps per year: Monte Carlo minus PDE +1.86 bp (SE 0.72, z = +2.6)</title></circle>
+<text x="471.86" y="196" class="ax" text-anchor="middle">252</text>
+<line x1="471.86" x2="471.86" y1="166.83" y2="127.77" stroke="var(--accent)" stroke-width="1.5" opacity="0.55"/>
+<line x1="467.86" x2="475.86" y1="166.83" y2="166.83" stroke="var(--accent)" stroke-width="1.5" opacity="0.55"/>
+<line x1="467.86" x2="475.86" y1="127.77" y2="127.77" stroke="var(--accent)" stroke-width="1.5" opacity="0.55"/>
+<circle cx="471.86" cy="147.3" r="5" fill="var(--accent)" stroke="var(--surface)" stroke-width="2"><title>252 steps per year: Monte Carlo minus PDE -0.12 bp (SE 0.72, z = -0.2)</title></circle>
+<text x="80.14" y="50.76" class="vl">+7.29</text>
+<text x="461.86" y="169.3" class="vl" text-anchor="end">-0.12 bp <tspan class="sem">SE 0.72</tspan></text>
+<text x="271" y="209.25" class="ax" text-anchor="middle">Euler steps per year, log scale</text>
+</svg></div>
+        </div>
+        <ul class="checks">
+          <li><svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><circle cx="7" cy="7" r="6.25" fill="none" stroke="var(--accent)" stroke-width="1.5"/><path d="M4.2 7.2 6.1 9 9.8 5.2" fill="none" stroke="var(--accent)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg><span><b>No typed results.</b> Every computed figure on this page is read from the project's results files, then formatted; only definitions, such as the 100,000-path reference, are written by hand.</span></li>
+          <li><svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><circle cx="7" cy="7" r="6.25" fill="none" stroke="var(--accent)" stroke-width="1.5"/><path d="M4.2 7.2 6.1 9 9.8 5.2" fill="none" stroke="var(--accent)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg><span><b>Surface.</b> 2,106 Eurex settlements, RMSE 0.14 vol points, largest error 1.52 vol points. No butterfly or calendar violation on 601,000 grid points (checked on a grid, not proven).</span></li>
+          <li><svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><circle cx="7" cy="7" r="6.25" fill="none" stroke="var(--ink-2)" stroke-width="1.5"/><path d="M7 6.4v4M7 4.1v.3" fill="none" stroke="var(--ink-2)" stroke-width="1.6" stroke-linecap="round"/></svg><div><b>Failures are published.</b> Of the 13 checks, these fail and stay published:<ul class="fails"><li>
+the model against Eurex settlements, on 1,600,000 paths at 252 steps per year</li><li>
+the model against Eurex settlements, on 1,600,000 paths at 52 steps per year</li><li>
+the simulation against the fitted surface at Eurex strikes and expiries, on 1,600,000 paths at 52 steps per year</li><li>
+vanilla and digital repricing against the fitted surface for maturities up to one year, on 1,600,000 paths at 1,008 steps per year</li><li>
+vanilla and digital repricing against the fitted surface, on 1,600,000 paths at 252 steps per year</li><li>vanilla and digital repricing against the fitted surface, on 1,600,000 paths at 52 steps per year</li><li>
+vanilla and digital repricing extrapolated to a zero time step, from 1,600,000 paths at 52 and 1,600,000 at 252 steps per year, and 1,600,000 at 1,008 for maturities up to one year</li></ul> For example, of the 72 repricings (vanillas, forwards and digitals) whose strike lies within two standard deviations of the forward, 2 fail, on 1,600,000 paths at 252 steps per year.</div></li>
+        </ul>
+      </section>
+    </div>
+
+    <section id="repricing" class="panel" aria-labelledby="repricing-h">
+      <p class="sec-k">Repricing</p>
+      <h2 id="repricing-h">The coupon, re-solved on each settlement date.</h2>
+      <p class="take">Solved on each settlement date since 28 September 2026, on 400,000 paths at 252 steps per year: between 6.44% <span class="se">SE 2.2 bp</span> on 16 October 2026 and 6.73% <span class="se">SE 2.3 bp</span> on 23 October 2026; largest daily move -18.6 bp <span class="se">SE 0.4</span>.</p>
+      <div class="sub-grid">
+        <div>
+          <div class="ch-h">Solved coupon by settlement date</div>
+          <div class="ch-s">400,000 paths at 252 steps per year on each date, one seed (the headline uses 4,000,000 paths); band: two standard errors</div>
+          <div class="chart-box">
+<div class="chart-scroll" tabindex="0" role="group" aria-label="Solved coupon on each settlement date"><svg xmlns="http://www.w3.org/2000/svg" class="chart" viewBox="0 0 520 236" role="img"><title>Solved coupon on each settlement date</title>
+<line x1="42" x2="504" y1="185.88" y2="185.88" class="grid"/>
+<text x="34" y="189.88" class="ax" text-anchor="end">6.4%</text>
+<line x1="42" x2="504" y1="117.85" y2="117.85" class="grid"/>
+<text x="34" y="121.85" class="ax" text-anchor="end">6.6%</text>
+<line x1="42" x2="504" y1="49.82" y2="49.82" class="grid"/>
+<text x="34" y="53.82" class="ax" text-anchor="end">6.8%</text>
+<line x1="42" x2="504" y1="206" y2="206" class="base"/>
+<text x="42" y="223" class="ax">28 September 2026</text>
+<text x="504" y="223" class="ax" text-anchor="end">23 October 2026</text>
+<path d="M42,110.54L66.32,114.09L90.63,99.5L114.95,70.53L139.26,77.04L163.58,140.88L187.89,148.05L212.21,95.36L236.53,83.16L260.84,116.55L285.16,130.03L309.47,136.53L333.79,140.92L358.11,123.87L382.42,157.04L406.74,110.29L431.05,108.2L455.37,143.62L479.68,106.87L504,59.15L504,90.14L479.68,137.47L455.37,173.38L431.05,138.58L406.74,140.44L382.42,186.85L358.11,153.85L333.79,170.78L309.47,166.36L285.16,159.92L260.84,146.77L236.53,113.84L212.21,125.71L187.89,177.87L163.58,170.7L139.26,108.02L114.95,101.7L90.63,130L66.32,144.27L42,140.77Z" fill="var(--accent)" fill-opacity="0.1"/>
+<path d="M42,125.66L66.32,129.18L90.63,114.75L114.95,86.11L139.26,92.53L163.58,155.79L187.89,162.96L212.21,110.54L236.53,98.5L260.84,131.66L285.16,144.98L309.47,151.44L333.79,155.85L358.11,138.86L382.42,171.94L406.74,125.37L431.05,123.39L455.37,158.5L479.68,122.17L504,74.65" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="382.42" cy="171.94" r="4" fill="var(--accent)" stroke="var(--surface)" stroke-width="2"/>
+<text x="374.42" y="183.94" class="lbm" text-anchor="end">6.44% (SE 2.2 bp), 16 October 2026</text>
+<circle cx="504" cy="74.65" r="4" fill="var(--accent)" stroke="var(--surface)" stroke-width="2"/>
+<text x="496" y="68.65" class="lbm" text-anchor="end">6.73% (SE 2.3 bp), 23 October 2026</text>
+<circle cx="504" cy="74.65" r="5" fill="var(--accent)" stroke="var(--surface)" stroke-width="2"/>
+<text x="504" y="14" class="lbm" text-anchor="end">same date as the headline, 400,000-path grid</text>
+<line x1="504" x2="504" y1="19" y2="67.65" stroke="var(--faint)" stroke-width="1" stroke-dasharray="2 2"/>
+<circle cx="42" cy="125.66" r="4" fill="var(--accent)" stroke="var(--surface)" stroke-width="2" opacity="0" class="hit"><title>28 September 2026: solved coupon 6.58% (SE 2.2 bp)</title></circle>
+<circle cx="66.32" cy="129.18" r="4" fill="var(--accent)" stroke="var(--surface)" stroke-width="2" opacity="0" class="hit"><title>29 September 2026: solved coupon 6.57% (SE 2.2 bp)</title></circle>
+<circle cx="90.63" cy="114.75" r="4" fill="var(--accent)" stroke="var(--surface)" stroke-width="2" opacity="0" class="hit"><title>30 September 2026: solved coupon 6.61% (SE 2.2 bp)</title></circle>
+<circle cx="114.95" cy="86.11" r="4" fill="var(--accent)" stroke="var(--surface)" stroke-width="2" opacity="0" class="hit"><title>1 October 2026: solved coupon 6.69% (SE 2.3 bp)</title></circle>
+<circle cx="139.26" cy="92.53" r="4" fill="var(--accent)" stroke="var(--surface)" stroke-width="2" opacity="0" class="hit"><title>2 October 2026: solved coupon 6.67% (SE 2.3 bp)</title></circle>
+<circle cx="163.58" cy="155.79" r="4" fill="var(--accent)" stroke="var(--surface)" stroke-width="2" opacity="0" class="hit"><title>5 October 2026: solved coupon 6.49% (SE 2.2 bp)</title></circle>
+<circle cx="187.89" cy="162.96" r="4" fill="var(--accent)" stroke="var(--surface)" stroke-width="2" opacity="0" class="hit"><title>6 October 2026: solved coupon 6.47% (SE 2.2 bp)</title></circle>
+<circle cx="212.21" cy="110.54" r="4" fill="var(--accent)" stroke="var(--surface)" stroke-width="2" opacity="0" class="hit"><title>7 October 2026: solved coupon 6.62% (SE 2.2 bp)</title></circle>
+<circle cx="236.53" cy="98.5" r="4" fill="var(--accent)" stroke="var(--surface)" stroke-width="2" opacity="0" class="hit"><title>8 October 2026: solved coupon 6.66% (SE 2.3 bp)</title></circle>
+<circle cx="260.84" cy="131.66" r="4" fill="var(--accent)" stroke="var(--surface)" stroke-width="2" opacity="0" class="hit"><title>9 October 2026: solved coupon 6.56% (SE 2.2 bp)</title></circle>
+<circle cx="285.16" cy="144.98" r="4" fill="var(--accent)" stroke="var(--surface)" stroke-width="2" opacity="0" class="hit"><title>12 October 2026: solved coupon 6.52% (SE 2.2 bp)</title></circle>
+<circle cx="309.47" cy="151.44" r="4" fill="var(--accent)" stroke="var(--surface)" stroke-width="2" opacity="0" class="hit"><title>13 October 2026: solved coupon 6.50% (SE 2.2 bp)</title></circle>
+<circle cx="333.79" cy="155.85" r="4" fill="var(--accent)" stroke="var(--surface)" stroke-width="2" opacity="0" class="hit"><title>14 October 2026: solved coupon 6.49% (SE 2.2 bp)</title></circle>
+<circle cx="358.11" cy="138.86" r="4" fill="var(--accent)" stroke="var(--surface)" stroke-width="2" opacity="0" class="hit"><title>15 October 2026: solved coupon 6.54% (SE 2.2 bp)</title></circle>
+<circle cx="382.42" cy="171.94" r="4" fill="var(--accent)" stroke="var(--surface)" stroke-width="2" opacity="0" class="hit"><title>16 October 2026: solved coupon 6.44% (SE 2.2 bp)</title></circle>
+<circle cx="406.74" cy="125.37" r="4" fill="var(--accent)" stroke="var(--surface)" stroke-width="2" opacity="0" class="hit"><title>19 October 2026: solved coupon 6.58% (SE 2.2 bp)</title></circle>
+<circle cx="431.05" cy="123.39" r="4" fill="var(--accent)" stroke="var(--surface)" stroke-width="2" opacity="0" class="hit"><title>20 October 2026: solved coupon 6.58% (SE 2.2 bp)</title></circle>
+<circle cx="455.37" cy="158.5" r="4" fill="var(--accent)" stroke="var(--surface)" stroke-width="2" opacity="0" class="hit"><title>21 October 2026: solved coupon 6.48% (SE 2.2 bp)</title></circle>
+<circle cx="479.68" cy="122.17" r="4" fill="var(--accent)" stroke="var(--surface)" stroke-width="2" opacity="0" class="hit"><title>22 October 2026: solved coupon 6.59% (SE 2.2 bp)</title></circle>
+<circle cx="504" cy="74.65" r="4" fill="var(--accent)" stroke="var(--surface)" stroke-width="2" opacity="0" class="hit"><title>23 October 2026: solved coupon 6.73% (SE 2.3 bp)</title></circle>
+</svg></div>
+          </div>
+        </div>
+        <div>
+          <div class="ch-h">The refresh pipeline</div>
+          <ol class="pipe" aria-label="Refresh pipeline"><li>fetch</li><li>build</li><li>health</li><li>calibrate</li><li>analyses</li><li>checks</li><li>docs</li><li>archive</li></ol>
+          <p class="fine">The pipeline refreshes the market data, the calibration and the analyses; the neural surrogate is trained by hand. In a run, a failed enforced check or source leaves the previous results in place.</p>
+        </div>
+      </div>
+    </section>
+
+    <section aria-labelledby="tk-h">
+      <div class="tk-head"><h2 id="tk-h">Also in the toolkit</h2><p>Further analyses, each with its caveat.</p></div>
+      <div class="card tk">
+        <div class="c">
+          <div class="k">Model risk</div>
+          <div class="fig">-83.0 to 0.0<span class="u">bp</span></div>
+          <p>Coupon change from local vol once a stochastic-variance factor with a fraction eta of the fitted vol of vol is added, leverage recalibrated to the same surface: the low end at eta 1.00, the high end at eta 0.00, on 1,600,000 paths at 504 steps per year.<small>eta is not identified by free data, and the recalibrated runs do not all reprice the vanillas within tolerance plus Monte Carlo error; indicative range, not quotable. The width of the band, not its Monte Carlo error, is the uncertainty shown.</small></p>
+        </div>
+        <div class="c">
+          <div class="k">Delta hedging</div>
+          <div class="fig">136,077<span class="u">EUR</span><span class="se">SE 4,079</span></div>
+          <p>Standard deviation of the issuer's P&amp;L, delta-hedged daily, per EUR 10,000,000 of notes sold, on 20,000 paths at 252 steps per year. Mean consistent with zero over 20,000 paths.<small>Simulated under the model itself, zero costs.</small></p>
+        </div>
+        <div class="c">
+          <div class="k">Neural surrogate</div>
+          <div class="fig">2,285<span class="u">× faster</span></div>
+          <p>A network prices a worst-of autocall on three assets in flat-vol Black-Scholes, neither this note nor local vol, in 36 µs: 2,285 times faster than the Monte Carlo pricer run on 595,792 paths, the path count at which its test-set standard error equals the network's RMSE net of label noise, 3.6 bp (4.5 bp before netting). Against the 100,000-path reference (14.2 ms) it is 389 times faster, and that reference is less precise than the network: a Monte Carlo standard error of 7.9 bp against the network's 4.5 bp.<small>RMSE in bp of notional on 512 out-of-sample points; times are the best of 7 Monte Carlo and 210 network repeats on a shared laptop. Monte Carlo in float64, the reference pricer, against a float32 network; against a float32 Monte Carlo the factor is 1,617.</small></p>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+</main>
+
+<footer>
+  <div class="wrap foot">
+    <div>
+      <div class="b"><svg width="22" height="22" viewBox="0 0 22 22" aria-hidden="true"><rect x="1" y="1" width="20" height="20" rx="6" fill="none" stroke="currentColor" stroke-opacity=".25"/><path d="M5 15.5h4v-4h4v-4h4" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>autocall-structuring</div>
+      <p>Illustrative, non-binding, hypothetical product: no offer, no solicitation, no investment advice. The issuer is hypothetical: no issuer name, logo, ISIN or LEI is attached to this note, and the index is used as an illustration, without a licence from its administrator.</p>
+      <p>EURO STOXX 50® and STOXX® are registered trademarks of STOXX Ltd.; Eurex® is a registered trademark of Deutsche Börse AG. This is an independent personal project, not affiliated with, sponsored or endorsed by STOXX, Deutsche Börse or the ECB; the note described here has never been issued.</p>
+      <p>Data sources: Eurex, STOXX and the ECB (Source: ECB statistics, processed by the author). Derived figures only; no index or settlement series is reproduced.</p>
+    </div>
+    <div class="flinks">
+      <a href="https://www.linkedin.com/in/julesventre/"><span>Jules Ventre on LinkedIn</span><svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><path d="M4 2h6v6M10 2 3 9" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
